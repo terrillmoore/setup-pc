@@ -23,5 +23,6 @@ code --install-extension ms-vscode.powershell
 code --install-extension ms-vscode-remote.remote-wsl
 code --install-extension ms-python.python
 code --install-extension jebbs.plantuml
+code --install-extension yiwwan.vscode-scope
 
 Write-Host "All done! Now reboot for settings to take!"
