@@ -16,7 +16,7 @@ reg add "HKCU\Control Panel\Mouse" /v MouseTrails /t REG_SZ /d 7 /f
 
 # Use Choco for installing the apps
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-choco install 7zip git github-desktop grepwin plantuml vscode visualstudio2019community
+choco install 7zip arduino git github-desktop grepwin plantuml vscode visualstudio2019community
 
 # Code extensions
 code --install-extension ms-dotnettools.csharp
@@ -26,6 +26,7 @@ code --install-extension ms-vscode.cpptools
 code --install-extension ms-vscode-remote.remote-wsl
 code --install-extension ms-vscode-remote.remote-ssh
 code --install-extension jebbs.plantuml
+#code --install-extension platformio.platformio-ide
 code --install-extension redhat.vscode-xml
 code --install-extension sissel.shopify-liquid
 code --install-extension streetsidesoftware.code-spell-checker
