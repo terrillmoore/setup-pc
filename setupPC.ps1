@@ -12,6 +12,7 @@ reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v Sho
 reg add "HKCU\Control Panel\Mouse" /v MouseSensitivity /t REG_SZ /d 20 /f
 reg add "HKCU\Control Panel\Mouse" /v MouseSpeed /t REG_SZ /d 1 /f
 reg add "HKCU\Control Panel\Mouse" /v MouseTrails /t REG_SZ /d 7 /f
+# set size to 3
 
 
 # Use Choco for installing the apps
