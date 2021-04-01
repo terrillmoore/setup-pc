@@ -13,6 +13,10 @@ reg add "HKCU\Control Panel\Mouse" /v MouseSensitivity /t REG_SZ /d 20 /f
 reg add "HKCU\Control Panel\Mouse" /v MouseSpeed /t REG_SZ /d 1 /f
 reg add "HKCU\Control Panel\Mouse" /v MouseTrails /t REG_SZ /d 7 /f
 # set size to 3
+# Powershell here menu
+reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLinkedConnections /t REG_DWORD /d 00000001
+reg add HKCR\Directory\shell\powershellmenu /d "Open PowerShell Here"
+reg add HKCR\Directory\shell\powershellmenu\command /d "powershell.exe -NoExit -Command Set-Location -LiteralPath '%L'"
 
 
 # Use Choco for installing the apps
