@@ -6,17 +6,18 @@ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /nores
 # Hibernate
 powercfg /Change standby-timeout-ac 0
 powercfg.exe /hibernate on
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSetting" /v ShowHibernateOption /t REG_DWORD /d 1 /f
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v ShowHibernateOption /t REG_DWORD /d 1 /f
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSetting" /v ShowHibernateOption /t REG_DWORD /d 1 /f
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v ShowHibernateOption /t REG_DWORD /d 1 /f
 # Mouse
 reg add "HKCU\Control Panel\Mouse" /v MouseSensitivity /t REG_SZ /d 20 /f
 reg add "HKCU\Control Panel\Mouse" /v MouseSpeed /t REG_SZ /d 1 /f
 reg add "HKCU\Control Panel\Mouse" /v MouseTrails /t REG_SZ /d 7 /f
-# set size to 3
+# Mouse pointer size to 3
+reg add "HKCU\Software\Microsoft\Accessibility" /v CursorSize /t REG_DWORD /d 3 /f
 # Powershell here menu
-reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLinkedConnections /t REG_DWORD /d 00000001
-reg add HKCR\Directory\shell\powershellmenu /d "Open PowerShell Here"
-reg add HKCR\Directory\shell\powershellmenu\command /d "powershell.exe -NoExit -Command Set-Location -LiteralPath '%L'"
+reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLinkedConnections /t REG_DWORD /d 00000001 /f
+reg add HKCR\Directory\shell\powershellmenu /d "Open PowerShell Here" /f
+reg add HKCR\Directory\shell\powershellmenu\command /d "powershell.exe -NoExit -Command Set-Location -LiteralPath '%L'" /f
 
 
 # Use Choco for installing the apps
