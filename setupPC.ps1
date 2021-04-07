@@ -29,7 +29,7 @@ foreach ($i in $psList) {
 
 # Use Choco for installing the apps
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-choco install 7zip arduino git github-desktop grepwin plantuml termite vscode visualstudio2019community
+choco install 7zip arduino arduino-cli git github-desktop grepwin plantuml termite vscode visualstudio2019community
 
 # Code extensions
 code --install-extension ms-dotnettools.csharp
