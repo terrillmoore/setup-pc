@@ -46,4 +46,10 @@ code --install-extension streetsidesoftware.code-spell-checker
 code --install-extension vsciot-vscode.vscode-arduino
 code --install-extension yiwwan.vscode-scope
 
+# keep defender away from known good
+Add-MpPreference -ExclusionPath D:\ScopePrj, d:\git -Force
+#Add-MpPreference -ExclusionExtension obj, lib, c, cpp, cs, h, kql, script  -Force
+Add-MpPreference -ExclusionProcess code.exe, devenv.exe -Force
+
+
 Write-Host "All done! Now reboot for settings to take!"
