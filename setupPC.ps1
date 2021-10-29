@@ -44,6 +44,8 @@ code --install-extension ms-vscode.powershell
 code --install-extension ms-vscode.cpptools
 code --install-extension ms-vscode-remote.remote-wsl
 code --install-extension ms-vscode-remote.remote-ssh
+code --install-extension docsmsft.docs-markdown
+# docsmsft.docs-images docsmsft.docs-yaml
 code --install-extension jebbs.plantuml
 #code --install-extension platformio.platformio-ide
 code --install-extension redhat.vscode-xml
