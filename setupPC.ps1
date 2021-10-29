@@ -37,6 +37,8 @@ $env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."
 Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 refreshenv
 
+# https://mermaid-js.github.io/mermaid
+
 # Code extensions
 code --install-extension ms-dotnettools.csharp
 code --install-extension ms-python.python
