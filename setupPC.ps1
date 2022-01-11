@@ -30,7 +30,7 @@ foreach ($i in $psList) {
 # Use Choco for installing the apps
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 # github-desktop
-choco install 7zip arduino arduino-cli git grepwin plantuml termite vscode visualstudio2019community
+choco install 7zip arduino arduino-cli git grepwin plantuml termite vscode visualstudio2020community
 
 #refresh envionment based on new installs from choco
 $env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."   
