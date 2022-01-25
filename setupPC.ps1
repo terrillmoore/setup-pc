@@ -61,5 +61,8 @@ Add-MpPreference -ExclusionPath D:\ScopePrj, d:\git -Force
 #Add-MpPreference -ExclusionExtension obj, lib, c, cpp, cs, h, kql, script  -Force
 Add-MpPreference -ExclusionProcess code.exe, devenv.exe -Force
 
+# Azure cli
+$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
+
 
 Write-Host "All done! Now reboot for settings to take!"
