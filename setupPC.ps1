@@ -3,8 +3,12 @@ dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux 
 dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 
 ### Make it mine
-# Hibernate
+# Timeout / battery prefs
+powercfg /Change monitor-timeout-ac 5
 powercfg /Change standby-timeout-ac 0
+powercfg /Change monitor-timeout-dc 5
+powercfg /Change standby-timeout-dc 30
+# Hibernate
 powercfg.exe /hibernate on
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSetting" /v ShowHibernateOption /t REG_DWORD /d 1 /f
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v ShowHibernateOption /t REG_DWORD /d 1 /f
@@ -48,7 +52,7 @@ code --install-extension ms-vscode-remote.remote-wsl
 code --install-extension ms-vscode-remote.remote-ssh
 code --install-extension docsmsft.docs-markdown
 # docsmsft.docs-images docsmsft.docs-yaml
-code --install-extension jebbs.plantuml
+# code --install-extension jebbs.plantuml
 #code --install-extension platformio.platformio-ide
 code --install-extension redhat.vscode-xml
 code --install-extension sissel.shopify-liquid
