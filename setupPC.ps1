@@ -67,11 +67,11 @@ $wingetUninstallApps = @(
   "Disney+"
   "McAfee LiveSafe"
   "WebAdvisor by McAfee"
-  "News" 
-  "MSN Weather" 
-  "Office" 
-  "Microsoft OneNote - en-us" 
-  "Spotify Music" 
+  "News"
+  "MSN Weather"
+  "Office"
+  "Microsoft OneNote - en-us"
+  "Spotify Music"
   )
 foreach ($app in $wingetUninstallApps) {
   winget uninstall --accept-source-agreements --name $app --purge --silent
@@ -137,10 +137,10 @@ foreach ($App in $AppXApps) {
   Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue
 }
 
-# install 
+# install
 $wingetApps = @(
-  "git.git" 
-  "Microsoft.VisualStudioCode" 
+  "git.git"
+  "Microsoft.VisualStudioCode"
   )
 foreach ($app in $wingetApps) {
   winget install --id $app --accept-source-agreements --accept-package-agreements --scope machine
@@ -167,7 +167,7 @@ $initialUsers = Get-Content -Raw .\users.json | ConvertFrom-Json
 foreach ($user in $initialUsers) {
   # since we don't have schema validation on PS 5.1, we
   # simply are careful about using the fields.
-  
+
   # If name is empty, we can't do anything.
   if ($user.name) {
     if (Get-LocalUser -name $user.name -ErrorAction SilentlyContinue) {
