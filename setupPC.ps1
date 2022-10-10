@@ -8,68 +8,146 @@ powercfg /Change monitor-timeout-ac 5
 powercfg /Change standby-timeout-ac 0
 powercfg /Change monitor-timeout-dc 5
 powercfg /Change standby-timeout-dc 30
+
+# turn off content manager stuff
+reg add "HKLM\Software\Policies\Microsoft\Windows\CloudContent" /v DisableWindowsConsumerFeatures /d 1 /t REG_DWORD /f
+reg add "HKCU\Software\Policies\Microsoft\Windows\CloudContent" /v DisableWindowsConsumerFeatures /d 1 /t REG_DWORD /f
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v ContentDeliveryAllowed /d 0 /t REG_DWORD /f
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SilentInstalledAppsEnabled /d 0 /t REG_DWORD /f
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SystemPaneSuggestionsEnabled /d 0 /t REG_DWORD /f
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v ContentDeliveryAllowed /d 0 /t REG_DWORD /f
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SilentInstalledAppsEnabled /d 0 /t REG_DWORD /f
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SystemPaneSuggestionsEnabled /d 0 /t REG_DWORD /f
+
+# Explorer
+$keys = @(
+  "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+  "HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+  )
+foreach ($key in $keys) {
+  Set-ItemProperty $key AutoCheckSelect 0
+  Set-ItemProperty $key Hidden 1
+  Set-ItemProperty $key HideFileExt 0
+  Set-ItemProperty $key ShowSuperHidden 1
+  }
+
+# stop Explorer; it will restart and reload the above keys.
+Stop-Process -processname explorer
+
 # Hibernate
 powercfg.exe /hibernate on
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSetting" /v ShowHibernateOption /t REG_DWORD /d 1 /f
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v ShowHibernateOption /t REG_DWORD /d 1 /f
-# Mouse
-reg add "HKCU\Control Panel\Mouse" /v MouseSensitivity /t REG_SZ /d 20 /f
-reg add "HKCU\Control Panel\Mouse" /v MouseSpeed /t REG_SZ /d 1 /f
-reg add "HKCU\Control Panel\Mouse" /v MouseTrails /t REG_SZ /d 7 /f
-# Mouse pointer size to 3
-reg add "HKCU\Software\Microsoft\Accessibility" /v CursorSize /t REG_DWORD /d 3 /f
-# Powershell here menu
-reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLinkedConnections /t REG_DWORD /d 00000001 /f
-reg add HKCR\Directory\shell\powershellmenu /d "Open PowerShell Here" /f
-reg add HKCR\Directory\shell\powershellmenu\command /d "powershell.exe -NoExit -Command Set-Location -LiteralPath '%L'" /f
-# Powershell fonts
-$psList= '%SystemRoot%_SysWOW64_WindowsPowerShell_v1.0_powershell.exe', 'HKCU\Console\%SystemRoot%_System32_WindowsPowerShell_v1.0_powershell.exe'
-foreach ($i in $psList) {
-  reg add "HKCU\Console\%SystemRoot%_System32_WindowsPowerShell_v1.0_powershell.exe" /v FaceName /t REG_SZ /d "Consolas" /f
-  reg add "HKCU\Console\%SystemRoot%_System32_WindowsPowerShell_v1.0_powershell.exe" /v FontFamily /t REG_DWORD /d 54 /f
-  reg add "HKCU\Console\%SystemRoot%_System32_WindowsPowerShell_v1.0_powershell.exe" /v FontSize /t REG_DWORD /d 917504 /f
-  reg add "HKCU\Console\%SystemRoot%_System32_WindowsPowerShell_v1.0_powershell.exe" /v FontWeight /t REG_DWORD /d 400 /f
+
+# remove alexa etc.
+$wingetUninstallApps = @(
+  "Amazon Alexa"
+  "Microsoft 365 - en-us"
+  "Disney+"
+  "McAfee LiveSafe"
+  "WebAdvisor by McAfee"
+  "News" 
+  "MSN Weather" 
+  "Office" 
+  "Microsoft OneNote - en-us" 
+  "Spotify Music" 
+  )
+foreach ($app in $wingetUninstallApps) {
+  winget uninstall --accept-source-agreements --name $app --purge --silent
 }
 
-# Use Choco for installing the apps
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-# github-desktop
-choco install 7zip arduino-cli git grepwin joplin mobaxterm teraterm vscode visualstudio2022community
+Install-PackageProvider -Name NuGet -minimumversion 2.8.5.208 -force
+# Get-Package -Provider Programs -IncludeWindowsInstaller -Name "Microsoft 365 - en-us" | Uninstall-Package -force
+# Get-Package -Provider Programs -IncludeWindowsInstaller -Name "Microsoft OneNote - en-us" | Uninstall-Package -force
+# Get-Package -Provider Programs -IncludeWindowsInstaller -Name "McAfee LiveSafe" | Uninstall-Package -force
+# Get-Package -Provider Programs -IncludeWindowsInstaller -Name "WebAdvisor by McAfee" | Uninstall-Package -force
 
-#refresh envionment based on new installs from choco
-$env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."   
-Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-refreshenv
+# keep defender away from known good
+# Add-MpPreference -ExclusionPath D:\ScopePrj, d:\git -Force
+#Add-MpPreference -ExclusionExtension obj, lib, c, cpp, cs, h, kql, script  -Force
+Add-MpPreference -ExclusionProcess code.exe, devenv.exe -Force
 
-# https://mermaid-js.github.io/mermaid
+# install users
+$initialUsers = @(
+  )
 
-# Code extensions
-code --install-extension ms-dotnettools.csharp
+foreach ($user in $initialUsers) {
+  New-LocalUser -name $user -disabled -nopassword
+  Set-LocalUser -name $user -PasswordNeverExpires $false
+  Add-LocalGroupMember -Member $user -Group Administrators
+  Enable-LocalUser -Name $user
+}
+
+# remove appX apps that we don't watn
+$AppXApps = @(
+  #Unnecessary Windows 10/11 AppX Apps
+  "*Microsoft.BingNews*"
+  "*Microsoft.GetHelp*"
+  "*Microsoft.Getstarted*"
+  "*Microsoft.Messaging*"
+  "*Microsoft.Microsoft3DViewer*"
+  "*Microsoft.MicrosoftOfficeHub*"
+  "*Microsoft.MicrosoftSolitaireCollection*"
+  "*Microsoft.NetworkSpeedTest*"
+  "*Microsoft.Office.Sway*"
+  "*Microsoft.OneConnect*"
+  "*Microsoft.People*"
+  "*Microsoft.Print3D*"
+  "*Microsoft.SkypeApp*"
+  "*Microsoft.WindowsFeedbackHub*"
+  "*Microsoft.Xbox.TCUI*"
+  "*Microsoft.XboxApp*"
+  "*Microsoft.XboxGameOverlay*"
+  "*Microsoft.XboxIdentityProvider*"
+  "*Microsoft.XboxSpeechToTextOverlay*"
+  "*Microsoft.ZuneMusic*"
+  "*Microsoft.ZuneVideo*"
+  "*MicrosoftTeams*"
+  #Sponsored Windows 10 AppX Apps
+  #Add sponsored/featured apps to remove in the "*AppName*" format
+  "*AdobeSystemsIncorporated.AdobePhotoshopExpress*"
+  "*AmazonAlexa*"
+  "*Duolingo-LearnLanguagesforFree*"
+  "*CandyCrush*"
+  "*Wunderlist*"
+  "*Flipboard*"
+  "*Twitter*"
+  "*Facebook*"
+  "*Instagram*"
+  "*TikTok*"
+  "*Prime Video*"
+  "*WhatsApp*"
+  "*Messenger*"
+)
+
+foreach ($App in $AppXApps) {
+  Write-Verbose -Message ('Removing Package {0}' -f $App)
+  Get-AppxPackage -Name $App | Remove-AppxPackage -ErrorAction SilentlyContinue
+  Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
+  Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue
+}
+
+# install 
+$wingetApps = @(
+  "git.git" 
+  "Microsoft.VisualStudioCode" 
+  )
+foreach ($app in $wingetApps) {
+  winget install --id $app --accept-source-agreements --accept-package-agreements --scope machine
+}
+
+# reload the path per https://stackoverflow.com/questions/17794507/reload-the-path-in-powershell
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+
+# Install code extensions
 code --install-extension ms-python.python
 code --install-extension ms-vscode.powershell
 code --install-extension ms-vscode.cpptools
 code --install-extension ms-vscode-remote.remote-wsl
 code --install-extension ms-vscode-remote.remote-ssh
-code --install-extension docsmsft.docs-markdown
-# docsmsft.docs-images docsmsft.docs-yaml
-# code --install-extension jebbs.plantuml
-#code --install-extension platformio.platformio-ide
 code --install-extension redhat.vscode-xml
-code --install-extension sissel.shopify-liquid
-code --install-extension streetsidesoftware.code-spell-checker
-code --install-extension vsciot-vscode.vscode-arduino
-code --install-extension yiwwan.vscode-scope
-
-# keep defender away from known good
-Add-MpPreference -ExclusionPath D:\ScopePrj, d:\git -Force
-#Add-MpPreference -ExclusionExtension obj, lib, c, cpp, cs, h, kql, script  -Force
-Add-MpPreference -ExclusionProcess code.exe, devenv.exe -Force
-
-# Azure cli
-$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
 
 # Who doesn't love WSL
 wsl --install -d ubuntu
-
 
 Write-Host "All done! Now reboot for settings to take!"
