@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Schema for users.json",
+  "title": "Users",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "title": "short name",
+        "description": "User ID"
+      },
+      "fullname": {
+        "type": "string",
+        "title": "Long name (first, last)",
+        "description": "Full name of user"
+      },
+      "description": {
+        "type": "string",
+        "title": "Description of user",
+        "description": "Description of user (optional)"
+      },
+      "required": ["name", "fullname"],
+      "additionalProperties": false
+    }
+  }
+}
