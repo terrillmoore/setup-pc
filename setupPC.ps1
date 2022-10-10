@@ -1,3 +1,19 @@
+##############################################################################
+#
+# Name: setupPC.ps1
+#
+# Function:
+#       Set up a Windows 11 Professional PC for use at MCCI
+#
+# Copyright notice and license:
+#       See LICENSE.md
+#
+# Author:
+#       Robbie Harris
+#       Adapted for MCCI by Terry Moore
+#
+##############################################################################
+
 # Prep WSL
 dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
