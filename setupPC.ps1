@@ -88,17 +88,6 @@ Install-PackageProvider -Name NuGet -minimumversion 2.8.5.208 -force
 #Add-MpPreference -ExclusionExtension obj, lib, c, cpp, cs, h, kql, script  -Force
 Add-MpPreference -ExclusionProcess code.exe, devenv.exe -Force
 
-# install users
-$initialUsers = @(
-  )
-
-foreach ($user in $initialUsers) {
-  New-LocalUser -name $user -disabled -nopassword
-  Set-LocalUser -name $user -PasswordNeverExpires $false
-  Add-LocalGroupMember -Member $user -Group Administrators
-  Enable-LocalUser -Name $user
-}
-
 # remove appX apps that we don't watn
 $AppXApps = @(
   #Unnecessary Windows 10/11 AppX Apps
@@ -171,4 +160,41 @@ code --install-extension redhat.vscode-xml
 # Who doesn't love WSL
 wsl --install -d ubuntu
 
+# install users
+
+$initialUsers = Get-Content -Raw .\users.json | ConvertFrom-Json
+
+foreach ($user in $initialUsers) {
+  # since we don't have schema validation on PS 5.1, we
+  # simply are careful about using the fields.
+  
+  # If name is empty, we can't do anything.
+  if ($user.name) {
+    if (Get-LocalUser -name $user.name -ErrorAction SilentlyContinue) {
+      Write-Host "User $user.name exists, skipping"
+    } else {
+      # create disabled user so we can hack
+      New-LocalUser -name $user.name -disabled -nopassword
+
+      # set optional properties
+      if ($user.description) {
+        Set-LocalUser -name $user -Description $user.description
+      }
+      if ($user.fullname) {
+        Set-LocalUser -Name $user -FullName $user.fullname
+      }
+
+      # make sure they have to set password on first login.
+      Set-LocalUser -name $user -PasswordNeverExpires $false
+
+      # make them an administrator
+      Add-LocalGroupMember -Member $user -Group Administrators
+
+      # after all this, we can enable the user.
+      Enable-LocalUser -Name $user
+    }
+  }
+}
+
+# finish up
 Write-Host "All done! Now reboot for settings to take!"
