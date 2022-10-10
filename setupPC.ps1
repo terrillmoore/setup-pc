@@ -19,7 +19,8 @@ dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux 
 dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 
 ### Make it mine
-# Timeout / battery prefs
+# Timeout / battery prefs -- leave it online when there's power,
+# so we can RDP in.
 powercfg /Change monitor-timeout-ac 5
 powercfg /Change standby-timeout-ac 0
 powercfg /Change monitor-timeout-dc 5
